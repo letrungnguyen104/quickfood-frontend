@@ -25,6 +25,7 @@ export default function Login() {
       const res = await authService.login(formData);
       if (res.success) {
         localStorage.setItem("accessToken", res.data.token);
+        localStorage.setItem("refreshToken", Response.data.data.refreshToken);
         Toast.success("Login successful!");
         navigate("/");
       }

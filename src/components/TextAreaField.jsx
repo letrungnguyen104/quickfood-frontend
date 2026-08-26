@@ -1,15 +1,16 @@
-export default function InputField({
+export default function TextAreaField({
   label,
-  type = "text",
-  placeholder,
+  name,
   value,
   onChange,
-  error,
-  name,
+  placeholder,
+  rows = 3,
   required = false,
+  error,
+  className = "",
 }) {
   return (
-    <div className="mb-4 w-full">
+    <div className={`mb-4 w-full ${className}`}>
       {label && (
         <label className="block text-sm font-semibold mb-2 text-gray-700">
           {label}
@@ -17,14 +18,14 @@ export default function InputField({
         </label>
       )}
 
-      <input
-        type={type}
+      <textarea
         name={name}
         value={value}
         onChange={onChange}
-        placeholder={placeholder}
+        rows={rows}
         required={required}
-        className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-4 transition duration-200 ${
+        placeholder={placeholder}
+        className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-4 transition duration-200 resize-y ${
           error
             ? "border-red-400 focus:ring-red-100"
             : "border-gray-300 focus:border-primary-500 focus:ring-primary-100"

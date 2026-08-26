@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Pizza, Coffee, Utensils, Beef, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom"; // Nhớ import thêm Link
+import { Pizza, Coffee, Utensils, Beef, ArrowRight, TrendingUp } from "lucide-react";
 import MainLayout from "../../layouts/MainLayout";
 import CategoryBadge from "../../components/CategoryBadge";
 import RestaurantCard from "../../components/RestaurantCard";
 import Button from "../../components/Button";
+import { restaurantService } from "../../services/restaurantService";
 
 const CATEGORIES = [
   { id: 'all', name: 'All', icon: Utensils },
@@ -12,41 +14,27 @@ const CATEGORIES = [
   { id: 'coffee', name: 'Coffee', icon: Coffee },
 ];
 
-const MOCK_RESTAURANTS = [
-  {
-    id: 1,
-    name: "Burger King",
-    image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=500&q=80",
-    rating: 4.8,
-    tags: ["American", "Fast Food", "Burger"],
-    deliveryTime: 25,
-    deliveryFee: 0,
-    isPromo: true
-  },
-  {
-    id: 2,
-    name: "Pizza Hut",
-    image: "https://images.unsplash.com/photo-1513104890f38-7c0f474c3129?w=500&q=80",
-    rating: 4.5,
-    tags: ["Italian", "Pizza"],
-    deliveryTime: 35,
-    deliveryFee: 2.99,
-    isPromo: false
-  },
-  {
-    id: 3,
-    name: "Starbucks",
-    image: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=500&q=80",
-    rating: 4.9,
-    tags: ["Coffee", "Bakery", "Desserts"],
-    deliveryTime: 15,
-    deliveryFee: 1.5,
-    isPromo: true
-  }
-];
-
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [restaurants, setRestaurants] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const response = await restaurantService.getAllRestaurants();
+        if (response.success) {
+          setRestaurants(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch restaurants:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
 
   return (
     <MainLayout>
@@ -87,7 +75,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-gray-900">Popular Restaurants</h2>
           <button className="text-primary-600 font-semibold hover:underline flex items-center gap-1">
@@ -95,10 +83,48 @@ export default function Home() {
           </button>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {MOCK_RESTAURANTS.map(restaurant => (
-            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-          ))}
+        {isLoading ? (
+          <div className="text-center py-10 text-gray-500 font-medium">
+            Loading amazing food...
+          </div>
+        ) : restaurants.length === 0 ? (
+          <div className="text-center py-10 text-gray-500">
+            No restaurants found.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {restaurants.map(restaurant => (
+              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="bg-gray-900 rounded-3xl p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-xl border border-gray-800">
+          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-96 h-96 bg-primary-600 rounded-full blur-[100px] opacity-30 pointer-events-none"></div>
+          
+          <div className="relative z-10 md:w-2/3 mb-8 md:mb-0">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-primary-500/20 p-2 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-primary-500" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+                Want to grow your business?
+              </h2>
+            </div>
+            <p className="text-gray-400 text-lg max-w-xl">
+              Partner with QuickFood to reach thousands of new customers, increase your revenue, and manage deliveries seamlessly with our dedicated vendor tools.
+            </p>
+          </div>
+          
+          <div className="relative z-10 md:w-1/3 flex justify-start md:justify-end">
+            <Link to="/register-restaurant">
+              <button className="bg-primary-500 text-white font-bold py-4 px-8 rounded-xl hover:bg-primary-600 transition-colors shadow-lg shadow-primary-500/30 flex items-center gap-2">
+                Join QuickFood Today <ArrowRight className="w-5 h-5" />
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
     </MainLayout>

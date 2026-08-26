@@ -1,31 +1,20 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag } from "lucide-react";
 import MainLayout from "../../layouts/MainLayout";
 import Button from "../../components/Button";
-
-const INITIAL_CART = [
-  { id: 1, name: "Whopper Meal", price: 8.99, quantity: 2, image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=80" },
-  { id: 3, name: "Crispy Chicken Fries", price: 4.99, quantity: 1, image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200&q=80" }
-];
+import { useDispatch, useSelector } from "react-redux";
+import { updateQuantity, removeItem } from "../../store/slices/cartSlice";
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState(INITIAL_CART);
+  const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
 
-  const updateQuantity = (id, delta) => {
-    setCartItems(items => 
-      items.map(item => {
-        if (item.id === id) {
-          const newQuantity = Math.max(1, item.quantity + delta);
-          return { ...item, quantity: newQuantity };
-        }
-        return item;
-      })
-    );
+  const handleUpdateQuantity = (id, delta) => {
+    dispatch(updateQuantity({ id, delta }));
   };
 
-  const removeItem = (id) => {
-    setCartItems(items => items.filter(item => item.id !== id));
+  const handleRemoveItem = (id) => {
+    dispatch(removeItem(id));
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -67,16 +56,25 @@ export default function Cart() {
                   </div>
 
                   <div className="flex items-center gap-3 bg-gray-50 rounded-full px-3 py-1 border border-gray-200">
-                    <button onClick={() => updateQuantity(item.id, -1)} className="text-gray-500 hover:text-primary-600 p-1">
+                    <button 
+                      onClick={() => handleUpdateQuantity(item.id, -1)} 
+                      className="text-gray-500 hover:text-primary-600 p-1"
+                    >
                       <Minus className="w-4 h-4" />
                     </button>
                     <span className="font-semibold w-6 text-center">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, 1)} className="text-gray-500 hover:text-primary-600 p-1">
+                    <button 
+                      onClick={() => handleUpdateQuantity(item.id, 1)} 
+                      className="text-gray-500 hover:text-primary-600 p-1"
+                    >
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>
 
-                  <button onClick={() => removeItem(item.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors ml-2">
+                  <button 
+                    onClick={() => handleRemoveItem(item.id)} 
+                    className="p-2 text-gray-400 hover:text-red-500 transition-colors ml-2"
+                  >
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </div>

@@ -2,12 +2,20 @@
 @import "tailwindcss";
 
 @theme {
+  /* Brand Primary Color */
   --color-primary-50: #fff7ed;
   --color-primary-100: #ffedd5;
   --color-primary-200: #fed7aa;
   --color-primary-500: #f97316;
   --color-primary-600: #ea580c;
   --color-primary-700: #c2410c;
+
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
 
   --font-sans: 'Montserrat', sans-serif;
   --font-heading: 'Montserrat', sans-serif;
@@ -28,7 +36,6 @@
     0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
     50% { transform: translateY(0); animation-timing-function: cubic-bezier(0,0,0.2,1); }
   }
-
 }
 
 @layer base {

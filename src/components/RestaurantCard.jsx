@@ -7,7 +7,7 @@ export default function RestaurantCard({ restaurant }) {
       <div className="card-hover cursor-pointer group animate-fade-in">
         <div className="relative h-48 overflow-hidden">
           <img 
-            src={restaurant.image} 
+            src={restaurant.coverImageUrl} 
             alt={restaurant.name} 
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
@@ -25,7 +25,7 @@ export default function RestaurantCard({ restaurant }) {
             </h3>
             <div className="flex items-center bg-yellow-50 px-2 py-1 rounded-lg">
               <Star className="w-4 h-4 text-yellow-500 fill-current mr-1" />
-              <span className="text-sm font-bold text-yellow-700">{restaurant.rating}</span>
+              <span className="text-sm font-bold text-yellow-700">{restaurant.averageRating}</span>
             </div>
           </div>
           

@@ -21,7 +21,7 @@ export default function MenuItemCard({ item, onAddToCart }) {
       
       <div className="w-28 h-28 flex-shrink-0">
         <img 
-          src={item.image} 
+          src={item.imageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"} 
           alt={item.name} 
           className="w-full h-full object-cover rounded-xl"
         />
