@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom"; // Nhớ import thêm Link
+import { Link } from "react-router-dom";
 import { Pizza, Coffee, Utensils, Beef, ArrowRight, TrendingUp } from "lucide-react";
 import MainLayout from "../../layouts/MainLayout";
 import CategoryBadge from "../../components/CategoryBadge";

@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { GoogleLogin } from "@react-oauth/google";
 import Button from "../../components/Button";
 import InputField from "../../components/InputField";
 import AuthLayout from "../../layouts/AuthLayout";
 import { authService } from "../../services/authService";
 import { Toast } from "../../utils/toast";
-import { GoogleLogin } from "@react-oauth/google";
+
+import { setCredentials } from "../../store/slices/authSlice";
 
 export default function Login() {
   const [formData, setFormData] = useState({ identifier: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -24,12 +28,17 @@ export default function Login() {
       setIsLoading(true);
       const res = await authService.login(formData);
       if (res.success) {
-        localStorage.setItem("accessToken", res.data.token);
-        localStorage.setItem("refreshToken", Response.data.data.refreshToken);
+        dispatch(setCredentials({ 
+          user: res.data.user, 
+          token: res.data.token,
+          refreshToken: res.data.refreshToken
+        }));
+
         Toast.success("Login successful!");
         navigate("/");
       }
     } catch (error) {
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +49,10 @@ export default function Login() {
       setIsLoading(true);
       const res = await authService.googleLogin(credentialResponse.credential);
       if (res.success) {
-        localStorage.setItem("accessToken", res.data.token);
+        dispatch(setCredentials({ 
+          user: res.data.user, 
+          token: res.data.token 
+        }));
         Toast.success("Welcome back!");
         navigate("/");
       }

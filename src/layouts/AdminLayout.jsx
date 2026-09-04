@@ -1,9 +1,12 @@
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { ShieldCheck, LogOut, Store, Users } from 'lucide-react';
 import { Toast } from '../utils/toast';
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/slices/authSlice';
 
 export default function AdminLayout() {
   const location = useLocation();
+    const dispatch = useDispatch();
 
   const navigation = [
     { name: 'Pending Approvals', href: '/admin', icon: ShieldCheck },
@@ -12,7 +15,7 @@ export default function AdminLayout() {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
+    dispatch(logout());
     Toast.success("Logged out successfully");
     window.location.href = '/login';
   };
