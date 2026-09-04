@@ -100,9 +100,11 @@ export default function Cart() {
                   </div>
                 </div>
 
-                <Button variant="primary" className="w-full !py-3">
-                  Proceed to Checkout
-                </Button>
+                <Link to="/checkout" className="w-full block">
+                  <Button variant="primary" className="w-full !py-3">
+                    Proceed to Checkout
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

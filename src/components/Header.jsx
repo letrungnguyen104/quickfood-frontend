@@ -1,17 +1,36 @@
-import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingBag, User, LogOut, Menu } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, ShoppingBag, LogOut, Menu } from "lucide-react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "./Button";
+import { logout } from '../store/slices/authSlice';
+import { Toast } from '../utils/toast';
 
 export default function Header() {
-  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const cartItems = useSelector((state) => state.cart.items);
   
-  const isAuthenticated = !!localStorage.getItem("accessToken");
+  const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    navigate("/login");
+    dispatch(logout());
+    Toast.success("Logged out successfully");
+    window.location.href = '/login';
+  };
+
+  const renderAvatar = () => {
+    if (user?.avatarUrl) {
+      return <img src={user.avatarUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />;
+    }
+    const initial = user?.fullName?.charAt(0) || user?.username?.charAt(0) || 'U';
+    return (
+      <div className="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold uppercase">
+        {initial}
+      </div>
+    );
   };
 
   return (
@@ -44,19 +63,21 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/cart" className="text-gray-500 hover:text-primary-600 relative p-2">
               <ShoppingBag className="w-6 h-6" />
-              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-500 rounded-full">
-                3
-              </span>
+              {cartItemsCount > 0 && (
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-500 rounded-full">
+                  {cartItemsCount}
+                </span>
+              )}
             </Link>
 
             {isAuthenticated ? (
               <div className="relative flex items-center gap-4 ml-4 pl-4 border-l border-gray-200">
-                <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-                  <div className="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold">
-                    U
-                  </div>
-                  <span className="text-sm font-medium text-gray-700">My Account</span>
-                </div>
+                <Link to="/profile" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+                  {renderAvatar()}
+                  <span className="text-sm font-medium text-gray-700 max-w-[120px] truncate">
+                    {user?.fullName || user?.username || 'My Account'}
+                  </span>
+                </Link>
                 <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 transition-colors p-2" title="Logout">
                   <LogOut className="w-5 h-5" />
                 </button>
@@ -87,9 +108,14 @@ export default function Header() {
             placeholder="Search..."
           />
           {isAuthenticated ? (
-            <button onClick={handleLogout} className="w-full flex items-center gap-2 text-red-500 font-medium p-2">
-              <LogOut className="w-5 h-5" /> Logout
-            </button>
+            <>
+              <Link to="/profile" className="w-full flex items-center gap-3 font-medium p-2 text-gray-700 border-b border-gray-100">
+                {renderAvatar()} Profile
+              </Link>
+              <button onClick={handleLogout} className="w-full flex items-center gap-2 text-red-500 font-medium p-2">
+                <LogOut className="w-5 h-5" /> Logout
+              </button>
+            </>
           ) : (
             <div className="flex flex-col gap-2">
               <Link to="/login"><Button variant="outline" className="w-full">Log in</Button></Link>

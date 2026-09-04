@@ -13,6 +13,8 @@ import VendorLayout from "../layouts/VendorLayout";
 import RegisterRestaurant from "../features/restaurant/RegisterRestaurant";
 import AdminLayout from '../layouts/AdminLayout';
 import AdminApproval from '../features/admin/AdminApproval';
+import Checkout from "../features/customer/Checkout";
+import UserProfile from "../features/customer/UserProfile";
 
 export default function AppRoutes() {
   return (
@@ -27,6 +29,8 @@ export default function AppRoutes() {
         <Route path="/restaurant/:id" element={<RestaurantDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/register-restaurant" element={<RegisterRestaurant />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/profile" element={<UserProfile />} />
 
         <Route path="/vendor" element={<VendorLayout />}>
           <Route index element={<VendorDashboard />} />
